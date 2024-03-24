@@ -1,3 +1,4 @@
+Nikhil Joshi
 # Virtual Vector
 
 Virtual Vector is a mobile app that allows you to use your phone as a virtual trackpad for your computer. With Virtual Vector, you can control your computer's cursor, perform gestures, and navigate your computer's interface using your mobile device.
