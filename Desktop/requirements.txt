@@ -1,0 +1,6 @@
+pyautogui
+opencv-python
+mediapipe
+comtypes==1.1.10
+pycaw==20181226
+screen-brightness-control==0.9.0
