@@ -20,8 +20,8 @@ mp_hands = mp.solutions.hands
 global TIPCOLOR
 global HANDCOLOR
 
-TIPCOLOR = (255, 0, 0)
-HANDCOLOR = (255, 0, 0)
+TIPCOLOR = (128, 0, 128)
+HANDCOLOR = (183,92,39 )
 
 def get_tip_color():
     return TIPCOLOR
@@ -248,7 +248,8 @@ class Controller:
 	def handle_controls(gesture, hand_result):		 
 		x,y = None,None
 		if gesture != Gest.PALM : 
-			x,y = Controller.get_position(hand_result)	 
+			x,y = Controller.get_position(hand_result)
+				 
 		# flag reset 
 		if gesture != Gest.FIST and Controller.grabflag: 
 			Controller.grabflag = False
@@ -260,27 +261,43 @@ class Controller:
 		# implementation 
 		if gesture == Gest.V_GEST: 
 			Controller.flag = True
-			pyautogui.moveTo(x, y, duration = 0.1) 
+			pyautogui.moveTo(x, y, duration = 0.1)
+			set_tip_color((1, 253, 43))
+			set_hand_color((253,219,1)) 
 		elif gesture == Gest.FIST: 
+			set_tip_color((0, 255,0))
+			set_hand_color((253,219,1))
 			if not Controller.grabflag : 
+				set_tip_color((0, 0, 255))
+				set_hand_color((253,219,1))
 				Controller.grabflag = True
 				pyautogui.mouseDown(button = "left") 
 			pyautogui.moveTo(x, y, duration = 0.1) 
 		elif gesture == Gest.MID and Controller.flag: 
+			set_tip_color((253, 94, 1))
+			set_hand_color((253,219,1)) 
 			pyautogui.click() 
 			Controller.flag = False
-		elif gesture == Gest.INDEX and Controller.flag: 
+		elif gesture == Gest.INDEX and Controller.flag:
+			set_tip_color((253,1,186))
+			set_hand_color((253,219,1))  
 			pyautogui.click(button='right') 
 			Controller.flag = False
-		elif gesture == Gest.TWO_FINGER_CLOSED and Controller.flag: 
+		elif gesture == Gest.TWO_FINGER_CLOSED and Controller.flag:
+			set_tip_color((1,253,249))
+			set_hand_color((10, 8, 228))  
 			pyautogui.doubleClick() 
 			Controller.flag = False
 		elif gesture == Gest.PINCH_MINOR: 
+			set_tip_color((0, 255, 0))
+			set_hand_color((255, 0, 0)) 
 			if Controller.pinchminorflag == False: 
 				Controller.pinch_control_init(hand_result) 
 				Controller.pinchminorflag = True
 			Controller.pinch_control(hand_result,Controller.scrollHorizontal, Controller.scrollVertical)	 
 		elif gesture == Gest.PINCH_MAJOR: 
+			set_tip_color((1,253,35))
+			set_hand_color((10, 8, 228))  
 			if Controller.pinchmajorflag == False: 
 				Controller.pinch_control_init(hand_result) 
 				Controller.pinchmajorflag = True
