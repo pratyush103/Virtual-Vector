@@ -302,7 +302,7 @@ class Controller:
 			set_hand_color((253,219,1)) 
 		elif gesture == Gest.FIST: 
 			set_tip_color((0, 255,0))
-			set_hand_color((253,219,1))
+			set_hand_color((0,0,255))
 			if not Controller.grabflag : 
 				set_tip_color((0, 0, 255))
 				set_hand_color((253,219,1))
@@ -321,7 +321,7 @@ class Controller:
 			Controller.flag = False
 		elif gesture == Gest.TWO_FINGER_CLOSED and Controller.flag:
 			set_tip_color((1,253,249))
-			set_hand_color((10, 8, 228))  
+			set_hand_color((253,219,1))  
 			pyautogui.doubleClick() 
 			Controller.flag = False
 		elif gesture == Gest.PINCH_MINOR: 
@@ -343,10 +343,11 @@ class Controller:
 			set_hand_color((10, 8, 228))  
 			set_cam_on(False)
 			pyautogui.press('esc')
-		elif gesture == Gest.RING:
-			set_tip_color((36,30,215))
-			set_hand_color((88, 87, 87))  
-			webbrowser.open('https://engineering.nmims.edu/')
+		else:
+			set_tip_color((128, 0, 128))
+			set_hand_color((183,92,39))  
+			
+
 
 class GestureController: 
 	gc_mode = 0
