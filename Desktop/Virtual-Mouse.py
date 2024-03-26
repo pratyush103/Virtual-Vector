@@ -8,13 +8,39 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume 
 from google.protobuf.json_format import MessageToDict 
 import screen_brightness_control as sbcontrol
+from pynput.keyboard import Controller, Key
+import tkinter as tk
+from tkinter import ttk
+import webbrowser
+
+import cv2
+
 
 # To create GUI 
-import tkinter as tk 
-from PIL import ImageTk, Image 
+#import tkinter as tk 
+ 
+#import customtkinter as ctk
+from PIL import Image, ImageTk, Image
+#from tkinter import ttk
+
+#from customtkinter import ttk
 pyautogui.FAILSAFE = False
 mp_drawing = mp.solutions.drawing_utils 
 mp_hands = mp.solutions.hands
+
+
+# Create a keyboard controller
+keyboard = Controller()
+
+# Boolean flag to indicate if the camera is on
+CAMON = True
+
+def get_cam_on():
+	return CAMON
+
+def set_cam_on(value):
+	global CAMON
+	CAMON = value
 
 # Color Codes
 global TIPCOLOR
@@ -161,13 +187,23 @@ class Controller:
 		dist = round((hand_result.landmark[8].x - Controller.pinchstartxcoord)*10,1) 
 		return dist 
 	def changesystembrightness(): 
-		currentBrightnessLv = sbcontrol.get_brightness()/100.0
-		currentBrightnessLv += Controller.pinchlv/50.0
+		oldBrightnessLv = sbcontrol.get_brightness()/100.0
+		currentBrightnessLv = oldBrightnessLv + Controller.pinchlv/50.0
 		if currentBrightnessLv > 1.0: 
 			currentBrightnessLv = 1.0
 		elif currentBrightnessLv < 0.0: 
-			currentBrightnessLv = 0.0	
-		sbcontrol.fade_brightness(int(100*currentBrightnessLv) , start = sbcontrol.get_brightness()) 
+			currentBrightnessLv = 0.0
+
+		# Change color based on whether brightness is increased or decreased
+		if currentBrightnessLv > oldBrightnessLv:
+			# Brightness increased, set color to (253,1,186)
+			set_tip_color((255,255,255))
+			
+		else:
+			# Brightness decreased, set color to (253,219,1)
+			set_tip_color((0,0,0))
+
+		sbcontrol.fade_brightness(int(100*currentBrightnessLv) , start = sbcontrol.get_brightness())  
 	def changesystemvolume(): 
 		devices = AudioUtilities.GetSpeakers() 
 		interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None) 
@@ -302,6 +338,15 @@ class Controller:
 				Controller.pinch_control_init(hand_result) 
 				Controller.pinchmajorflag = True
 			Controller.pinch_control(hand_result,Controller.changesystembrightness, Controller.changesystemvolume)
+		elif gesture == Gest.PINKY: 
+			set_tip_color((253,1,186))
+			set_hand_color((10, 8, 228))  
+			set_cam_on(False)
+			pyautogui.press('esc')
+		elif gesture == Gest.RING:
+			set_tip_color((36,30,215))
+			set_hand_color((88, 87, 87))  
+			webbrowser.open('https://engineering.nmims.edu/')
 
 class GestureController: 
 	gc_mode = 0
@@ -315,6 +360,10 @@ class GestureController:
 	def __init__(self): 
 		GestureController.gc_mode = 1
 		GestureController.cap = cv2.VideoCapture(0) 
+
+		GestureController.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+		GestureController.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
 		GestureController.CAM_HEIGHT = GestureController.cap.get(cv2.CAP_PROP_FRAME_HEIGHT) 
 		GestureController.CAM_WIDTH = GestureController.cap.get(cv2.CAP_PROP_FRAME_WIDTH) 
 	
@@ -348,7 +397,7 @@ class GestureController:
 		handminor = HandRecog(HLabel.MINOR) 
 
 		with mp_hands.Hands(max_num_hands = 2,min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands: 
-			while GestureController.cap.isOpened() and GestureController.gc_mode: 
+			while GestureController.cap.isOpened() and GestureController.gc_mode and get_cam_on(): 
 				success, image = GestureController.cap.read() 
 
 				if not success: 
@@ -385,18 +434,53 @@ class GestureController:
 		GestureController.cap.release() 
 		cv2.destroyAllWindows()
 
-def runvirtualmouse(): 
+def runvirtualmouse(event=None):  # Add event parameter to handle key press event
+	set_cam_on(True)
 	gc1 = GestureController() 
 	gc1.start() 
-root = tk.Tk() 
-root.geometry("600x600") 
-label = tk.Label(root, text="Welcome to Virtual Mouse", fg="brown",font='TkDefaultFont 16 bold') 
-label.grid(row=0, columnspan=5, pady=10, padx=10) 
-image = ImageTk.PhotoImage(Image.open("Desktop/tap.png")) 
-img_label = tk.Label(image=image , width=100, height=100, borderwidth=3, relief="solid") 
-img_label.grid(row=1, columnspan=5, pady=10, padx=10) 
-start_button = tk.Button(root,text=" Track Mouse",fg="white", bg='green', font='Helvetica 12 bold italic ',command= runvirtualmouse , height="4", width="16",activebackground='lightblue') 
-start_button.grid(row=3,column=2, pady=10, padx=20) 
+root = tk.Tk()
+root.geometry("800x600")
+root.columnconfigure(0, weight=1)  # make column 0 stretchable
+
+root.configure(bg='#1a1a1a')  # Set the background color to white
+
+label = tk.Label(root, text="Welcome to Virtual Mouse", fg="white",font='TkDefaultFont 16 bold', bg='#1a1a1a', width=100, height=4) 
+label.grid(row=0, column=0, pady=10, padx=10, sticky='nsew') 
+
+start_button = tk.Button(root, text="Track Mouse", fg="white", bg='#1f538d', font='Helvetica 12 bold italic', command=runvirtualmouse, height="4", width="100")
+start_button.grid(row=2, column=0, pady=10, padx=20, sticky='nsew')
+
+def on_enter(event):
+	start_button.config(bg='#14375e', relief=tk.FLAT, cursor='hand2', font='Helvetica 12 bold underline')
+
+def on_leave(event):
+	start_button.config(bg='#1f538d', relief=tk.FLAT, cursor='arrow', font='Helvetica 12 bold')
+
+start_button.bind('<Enter>', on_enter)
+start_button.bind('<Leave>', on_leave)
+start_button.config(borderwidth=5, relief=tk.FLAT, padx=10, pady=5)
+
+root.bind('<Return>', runvirtualmouse)  # Bind Enter key to runvirtualmouse function
+
+root.columnconfigure(0, weight=1)  # Allows column to grow as necessary
+root.rowconfigure(0, weight=1)  # Allows row 0 to grow as necessary
+root.rowconfigure(1, weight=1)  # Allows row 1 to grow as necessary
+
+cap = cv2.VideoCapture(0)
+
+# Create a label for the camera feed
+img_label = tk.Label(root,bg='#1a1a1a')
+img_label.grid(row=1, column=0, sticky='nsew')  # Place it at the center of the window
+def update_image():
+    ret, frame = cap.read()
+    frame = cv2.resize(frame, (10*60, 8*60))  # Resize the frame
+    cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    img = Image.fromarray(cv2image)
+    imgtk = ImageTk.PhotoImage(image=img)
+    img_label.imgtk = imgtk
+    img_label.configure(image=imgtk)
+    img_label.after(10, update_image) 
+
+update_image()
+
 root.mainloop() 
-label.geometery("400X300") 
-root.geometery(row =0,columnspan=5, pady= 10,padx=10) 
