@@ -1,44 +1,96 @@
-Nikhil Joshi
-# Virtual Vector
+# Virtual Mouse Gesture Controller
 
-Virtual Vector is a mobile app that allows you to use your phone as a virtual trackpad for your computer. With Virtual Vector, you can control your computer's cursor, perform gestures, and navigate your computer's interface using your mobile device.
+This project implements a virtual mouse that can be controlled using hand gestures. It leverages computer vision techniques and machine learning models provided by MediaPipe to detect and interpret hand movements, allowing you to control your computer's cursor and perform various actions using gestures.
 
 ## Features
 
-- **Wireless Connectivity**: Connect your phone to your computer using Wi-Fi or Bluetooth for seamless control.
+- **Hand Gesture Recognition**: Detects various hand gestures such as fist, open palm, and specific finger movements.
+- **Cursor Control**: Moves the cursor based on hand position.
+- **Gesture-Based Actions**:
+  - Fist: Click and drag.
+  - Two fingers closed: Double click.
+  - Pinch: Scroll and adjust system volume/brightness.
+  - Specific finger gestures for right-click and other actions.
+- **Graphical User Interface (GUI)**: A user-friendly interface to start and stop the gesture recognition.
 
-- **Intuitive Trackpad**: Use your phone's touch screen as a trackpad to move the cursor, click, and scroll.
+## Installation
 
-- **Gesture Support**: Perform gestures like pinch-to-zoom, two-finger scrolling, and three-finger swiping for enhanced control.
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/yourusername/virtual-mouse-gesture-controller.git
+    cd virtual-mouse-gesture-controller
+    ```
 
-- **Customizable Settings**: Adjust sensitivity, cursor speed, and other settings to personalize your trackpad experience.
+2. **Install the required packages**:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-- **Compatibility**: Virtual Vector is compatible with Windows, macOS, and Linux operating systems.
+    Ensure the following libraries are installed:
+    - OpenCV
+    - MediaPipe
+    - PyAutoGUI
+    - Math
+    - Enum
+    - Pycaw
+    - Google Protobuf
+    - Screen Brightness Control
+    - Pynput
+    - Tkinter
+    - PIL (Pillow)
 
-## Getting Started
+## Usage
 
-To get started with Virtual Vector, follow these steps:
+1. **Run the application**:
+    ```sh
+    python main.py
+    ```
 
-1. Download and install the Virtual Vector app on your mobile device from the [App Store](link) or [Google Play Store](link).
+2. **Using the GUI**:
+    - A window will appear with a button labeled "Track Mouse". Click this button to start the gesture recognition.
+    - You can also press the `Enter` key to start the gesture recognition.
 
-2. Install the Virtual Vector desktop client on your computer. You can download the client from the [Virtual Vector website](link).
+3. **Performing gestures**:
+    - Move your hand in front of the camera to control the cursor.
+    - Use specific gestures to perform actions like clicking, dragging, scrolling, and adjusting volume/brightness.
 
-3. Launch the Virtual Vector app on your mobile device and open the desktop client on your computer.
+## Gesture Controls
 
-4. Connect your phone and computer using the provided instructions in the app.
+- **Fist**: Click and drag.
+- **Two Fingers Closed**: Double click.
+- **Pinch**:
+  - Horizontal pinch: Scroll horizontally.
+  - Vertical pinch: Scroll vertically.
+- **V Gesture**: Move cursor.
+- **Index Finger**: Right-click.
+- **Middle Finger**: Single click.
 
-5. Once connected, you can start using your phone as a virtual trackpad for your computer.
+## Configuration
+
+- **Colors**: You can customize the colors for fingertip and hand landmarks by modifying the `TIPCOLOR` and `HANDCOLOR` variables.
+- **Camera Settings**: Adjust camera resolution and frame settings in the `GestureController` class.
+
+## Code Overview
+
+- **GestureController Class**: Manages the initialization and processing of hand gestures using MediaPipe.
+- **HandRecog Class**: Recognizes and encodes hand gestures based on landmark positions.
+- **Controller Class**: Maps gestures to system controls (mouse movements, clicks, scrolls, volume, and brightness adjustments).
+- **GUI**: Built using Tkinter, providing a simple interface to start and stop gesture recognition.
+
+## Troubleshooting
+
+- Ensure your webcam is properly connected.
+- Make sure you have all required libraries installed.
+- Adjust the lighting in your environment for better hand detection accuracy.
 
 ## Contributing
 
-Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue on the [Virtual Vector GitHub repository](link). You can also submit pull requests for any improvements you would like to make.
+Feel free to fork this repository, create new features, fix bugs, or improve the documentation. Pull requests are welcome!
 
 ## License
 
-Virtual Vector is released under the [MIT License](link). Feel free to use, modify, and distribute this software.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Contact
+---
 
-If you have any questions or need support, you can reach us at [support@virtualvector.com](mailto:support@virtualvector.com).
-
-Happy tracking!
+This README provides a comprehensive guide to understanding, installing, and using the Virtual Mouse Gesture Controller project. It also includes sections on code overview, configuration, troubleshooting, contributing, and licensing.
