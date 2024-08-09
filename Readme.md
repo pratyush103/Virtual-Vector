@@ -93,4 +93,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-This README provides a comprehensive guide to understanding, installing, and using the Virtual Mouse Gesture Controller project. It also includes sections on code overview, configuration, troubleshooting, contributing, and licensing.
